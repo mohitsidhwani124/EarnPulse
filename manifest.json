@@ -1,0 +1,17 @@
+
+{
+  "name": "EarnPulse Pro",
+  "short_name": "EarnPulse",
+  "description": "The world's leading micro-task platform powered by AI.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

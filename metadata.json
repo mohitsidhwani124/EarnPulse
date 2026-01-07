@@ -1,0 +1,12 @@
+{
+  "name": "EarnPulse Pro",
+  "short_name": "EarnPulse",
+  "description": "The world's leading micro-task platform powered by AI. Earn rewards for surveys, games, and data labeling.",
+  "theme_color": "#16a34a",
+  "background_color": "#f9fafb",
+  "display": "standalone",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
