@@ -36,13 +36,20 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ onLogin }) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 mb-8">
+          <div className="grid grid-cols-4 gap-2 mb-8">
             <button
               onClick={() => handleSocialLogin('Google')}
               className="flex items-center justify-center py-3 px-4 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all group"
               title="Sign in with Google"
             >
               <i className="fa-brands fa-google text-red-500 text-lg group-hover:scale-110 transition-transform"></i>
+            </button>
+            <button
+              onClick={() => handleSocialLogin('GitHub')}
+              className="flex items-center justify-center py-3 px-4 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all group"
+              title="Sign in with GitHub"
+            >
+              <i className="fa-brands fa-github text-gray-900 text-lg group-hover:scale-110 transition-transform"></i>
             </button>
             <button
               onClick={() => handleSocialLogin('Apple')}

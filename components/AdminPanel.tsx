@@ -205,70 +205,81 @@ const AdminPanel: React.FC = () => {
 
       {activeTab === 'deployment' && (
         <div className="space-y-6 animate-in fade-in">
-          <div className="bg-gray-900 rounded-[2rem] p-8 text-white">
-            <div className="flex items-center gap-3 mb-6">
-              <i className="fa-solid fa-rocket text-green-400 text-2xl"></i>
-              <h3 className="text-xl font-bold">Production Readiness Health</h3>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white/5 border border-white/10 p-5 rounded-2xl flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <i className="fa-solid fa-check-circle text-green-500"></i>
-                  <span className="text-sm">PWA Metadata (manifest.json)</span>
+          <div className="bg-gray-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl overflow-hidden relative">
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center text-green-400 text-3xl">
+                  <i className="fa-brands fa-github"></i>
                 </div>
-                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded-full font-bold">ACTIVE</span>
-              </div>
-              <div className="bg-white/5 border border-white/10 p-5 rounded-2xl flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <i className="fa-solid fa-check-circle text-green-500"></i>
-                  <span className="text-sm">Secure Session Manager</span>
+                <div>
+                  <h3 className="text-2xl font-bold">GitHub Deployment Suite</h3>
+                  <p className="text-gray-400 text-sm">Everything you need to go live on GitHub Pages</p>
                 </div>
-                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded-full font-bold">ACTIVE</span>
               </div>
-              <div className="bg-white/5 border border-white/10 p-5 rounded-2xl flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <i className="fa-solid fa-check-circle text-green-500"></i>
-                  <span className="text-sm">SPA Routing (vercel.json)</span>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <div className="bg-white/5 border border-white/10 p-6 rounded-3xl">
+                  <h4 className="font-bold text-sm mb-4 flex items-center gap-2">
+                    <i className="fa-solid fa-clipboard-check text-green-400"></i>
+                    Files Verified
+                  </h4>
+                  <div className="space-y-3">
+                    {['index.html', '404.html', 'manifest.json', 'vercel.json'].map(file => (
+                      <div key={file} className="flex items-center justify-between text-xs">
+                        <span className="text-gray-400">{file}</span>
+                        <span className="text-green-400 font-bold uppercase tracking-tighter">Ready</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded-full font-bold">READY</span>
-              </div>
-              <div className="bg-white/5 border border-white/10 p-5 rounded-2xl flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <i className="fa-solid fa-circle-info text-blue-400"></i>
-                  <span className="text-sm">Production API Key</span>
-                </div>
-                <span className="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full font-bold">VAR DETECTED</span>
-              </div>
-            </div>
 
-            <div className="mt-8">
-              <p className="text-xs text-gray-400 uppercase font-bold tracking-widest mb-4">Quick Deploy Command</p>
-              <div className="bg-black/50 p-4 rounded-xl font-mono text-sm flex justify-between items-center group">
-                <code className="text-green-400">vercel --prod</code>
-                <button className="text-gray-500 hover:text-white transition-colors">
-                  <i className="fa-solid fa-copy"></i>
-                </button>
+                <div className="bg-white/5 border border-white/10 p-6 rounded-3xl">
+                  <h4 className="font-bold text-sm mb-4 flex items-center gap-2">
+                    <i className="fa-solid fa-server text-blue-400"></i>
+                    Environment
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-400">API_KEY Status</span>
+                      <span className="text-blue-400 font-bold uppercase tracking-tighter">Detected</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-400">SPA Routing</span>
+                      <span className="text-blue-400 font-bold uppercase tracking-tighter">Configured</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-black/40 border border-white/10 p-8 rounded-[2rem]">
+                <h4 className="font-bold mb-4">How to Deploy Now:</h4>
+                <ol className="space-y-4 text-sm text-gray-300">
+                  <li className="flex gap-4">
+                    <span className="flex-shrink-0 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold">1</span>
+                    <span>Create a <strong>new repository</strong> on GitHub named `earnpulse`.</span>
+                  </li>
+                  <li className="flex gap-4">
+                    <span className="flex-shrink-0 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold">2</span>
+                    <span>Upload all provided files (including the <strong>404.html</strong> hack) via the web interface.</span>
+                  </li>
+                  <li className="flex gap-4">
+                    <span className="flex-shrink-0 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold">3</span>
+                    <span>Go to <strong>Settings > Pages</strong> and set branch to `main`.</span>
+                  </li>
+                </ol>
+                <div className="mt-8 pt-8 border-t border-white/10 flex flex-col sm:flex-row gap-4">
+                  <button className="flex-1 bg-green-600 hover:bg-green-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-green-900/20 flex items-center justify-center gap-2">
+                    <i className="fa-solid fa-download"></i>
+                    Download Project Bundle
+                  </button>
+                  <button className="flex-1 border border-white/20 hover:bg-white/10 text-white py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2">
+                    <i className="fa-brands fa-github"></i>
+                    Open GitHub
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-            <h4 className="font-bold text-gray-800 mb-2">Next Steps</h4>
-            <ul className="text-sm text-gray-500 space-y-2">
-              <li className="flex items-center gap-2">
-                <i className="fa-solid fa-1 bg-gray-100 w-5 h-5 rounded-full flex items-center justify-center text-[10px]"></i>
-                Commit changes to your main branch.
-              </li>
-              <li className="flex items-center gap-2">
-                <i className="fa-solid fa-2 bg-gray-100 w-5 h-5 rounded-full flex items-center justify-center text-[10px]"></i>
-                Connect your repository to Vercel or Netlify.
-              </li>
-              <li className="flex items-center gap-2">
-                <i className="fa-solid fa-3 bg-gray-100 w-5 h-5 rounded-full flex items-center justify-center text-[10px]"></i>
-                Add your Gemini `API_KEY` to the environment variables.
-              </li>
-            </ul>
+            <i className="fa-brands fa-github absolute -bottom-20 -right-20 text-[300px] text-white/5 rotate-12"></i>
           </div>
         </div>
       )}

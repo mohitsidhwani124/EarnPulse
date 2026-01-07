@@ -121,10 +121,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             <a href="#" className="hover:text-white transition-colors">Cookies</a>
           </div>
           <div className="flex gap-4">
-            <button className="w-10 h-10 rounded-full border border-gray-800 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+            <button 
+              onClick={() => window.open('https://twitter.com', '_blank')}
+              className="w-10 h-10 rounded-full border border-gray-800 flex items-center justify-center hover:bg-white hover:text-black transition-all"
+            >
               <i className="fa-brands fa-twitter"></i>
             </button>
-            <button className="w-10 h-10 rounded-full border border-gray-800 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+            <button 
+              onClick={onGetStarted}
+              className="w-10 h-10 rounded-full border border-gray-800 flex items-center justify-center hover:bg-white hover:text-black transition-all"
+            >
               <i className="fa-brands fa-github"></i>
             </button>
           </div>
