@@ -4,7 +4,7 @@ import { api } from '../services/api';
 import { User, Task, Transaction, TaskCategory } from '../types';
 
 const AdminPanel: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tasks' | 'transactions' | 'deployment'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tasks' | 'transactions' | 'monetization' | 'deployment'>('overview');
   const [stats, setStats] = useState<any>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -56,7 +56,7 @@ const AdminPanel: React.FC = () => {
     }
   };
 
-  if (loading && !stats) return <div className="p-12 text-center">Loading Admin Suite...</div>;
+  if (loading && !stats) return <div className="p-12 text-center text-gray-400 font-medium">Loading Admin Suite...</div>;
 
   return (
     <div className="space-y-6">
@@ -75,6 +75,7 @@ const AdminPanel: React.FC = () => {
           { id: 'overview', label: 'Overview', icon: 'fa-chart-pie' },
           { id: 'users', label: 'Users', icon: 'fa-users' },
           { id: 'tasks', label: 'Tasks', icon: 'fa-list-check' },
+          { id: 'monetization', label: 'Revenue', icon: 'fa-money-bill-trend-up' },
           { id: 'transactions', label: 'Ledger', icon: 'fa-file-invoice-dollar' },
           { id: 'deployment', label: 'Deploy', icon: 'fa-cloud-arrow-up' },
         ].map((tab) => (
@@ -103,12 +104,76 @@ const AdminPanel: React.FC = () => {
               <p className="text-2xl font-bold text-green-600">${stats?.totalBalance.toFixed(2)}</p>
             </div>
             <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase mb-1">Total Payouts</p>
-              <p className="text-2xl font-bold text-blue-600">${stats?.totalPayouts.toFixed(2)}</p>
+              <p className="text-xs font-bold text-gray-400 uppercase mb-1">Projected Profit</p>
+              <p className="text-2xl font-bold text-blue-600">${(stats?.totalBalance * 0.4).toFixed(2)}</p>
             </div>
             <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
               <p className="text-xs font-bold text-gray-400 uppercase mb-1">Live Tasks</p>
               <p className="text-2xl font-bold text-orange-600">{stats?.activeTasks}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'monetization' && (
+        <div className="space-y-6 animate-in fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100">
+              <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+                <i className="fa-solid fa-sliders text-green-600"></i>
+                Revenue Settings
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase mb-2 ml-1">Your Commission (%)</label>
+                  <div className="flex items-center gap-4">
+                    <input type="range" className="flex-1 accent-green-600" min="5" max="80" defaultValue="40" />
+                    <span className="font-bold text-green-600">40%</span>
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-2 italic">This is how much you keep from every $1.00 an advertiser pays.</p>
+                </div>
+                
+                <div className="pt-6 border-t border-gray-100">
+                  <label className="block text-xs font-bold text-gray-400 uppercase mb-4 ml-1">Partner Integrations</label>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                      <div className="flex items-center gap-3">
+                        <i className="fa-solid fa-list-check text-blue-500"></i>
+                        <span className="text-sm font-bold">CPALead Offerwall</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase">Disconnected</span>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                      <div className="flex items-center gap-3">
+                        <i className="fa-brands fa-google text-red-500"></i>
+                        <span className="text-sm font-bold">AdMob Rewards</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase">Disconnected</span>
+                    </div>
+                  </div>
+                  <button className="w-full mt-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold">
+                    Connect New Provider
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-green-600 p-8 rounded-[2.5rem] text-white flex flex-col justify-between overflow-hidden relative">
+              <div className="relative z-10">
+                <p className="text-xs font-bold uppercase tracking-widest opacity-80 mb-2">Estimated Monthly Revenue</p>
+                <h3 className="text-4xl font-extrabold mb-6">$0.00</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs">1</div>
+                    <p className="text-xs text-green-100">Total earnings based on current user activity.</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs">2</div>
+                    <p className="text-xs text-green-100">Reach 1,000 active users to unlock higher CPAs.</p>
+                  </div>
+                </div>
+              </div>
+              <i className="fa-solid fa-sack-dollar absolute -bottom-10 -right-10 text-[200px] opacity-10 rotate-12"></i>
             </div>
           </div>
         </div>
