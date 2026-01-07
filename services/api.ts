@@ -2,7 +2,7 @@
 import { db } from './db';
 import { User, Task, Transaction } from '../types';
 
-const LATENCY = 800; 
+const LATENCY = 400; 
 
 const wait = () => new Promise(resolve => setTimeout(resolve, LATENCY));
 
@@ -16,7 +16,7 @@ export const api = {
         return existingUser;
       }
       
-      const role = email.includes('admin') ? 'admin' : 'user';
+      const role = email.toLowerCase().includes('admin') ? 'admin' : 'user';
       const newUser: User = {
         id: email,
         name: email.split('@')[0],
@@ -82,16 +82,22 @@ export const api = {
       await wait();
       const users = db.getAllUsers();
       const txs = db.getAllTransactions();
+      const settings = db.getSettings();
       return {
         totalUsers: users.length,
         totalBalance: users.reduce((acc, u) => acc + u.balance, 0),
         totalPayouts: txs.filter(t => t.type === 'Payout').reduce((acc, t) => acc + t.amount, 0),
-        activeTasks: db.getTasks().length
+        activeTasks: db.getTasks().length,
+        settings
       };
     },
     async getUsers(): Promise<User[]> {
       await wait();
       return db.getAllUsers();
+    },
+    async updateUserBalance(userId: string, amount: number) {
+      await wait();
+      db.updateUserBalance(userId, amount);
     },
     async getTransactions(): Promise<Transaction[]> {
       await wait();
@@ -104,6 +110,16 @@ export const api = {
     async deleteTask(id: string) {
       await wait();
       db.deleteTask(id);
+    },
+    async updateSettings(settings: any) {
+      await wait();
+      db.updateSettings(settings);
+    },
+    exportDB() {
+      return db.exportData();
+    },
+    importDB(json: string) {
+      db.importData(json);
     }
   }
 };

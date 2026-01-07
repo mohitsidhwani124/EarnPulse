@@ -8,6 +8,11 @@ interface DBState {
   tasks: Task[];
   transactions: Transaction[];
   currentUser: string | null;
+  settings?: {
+    maintenanceMode: boolean;
+    payoutsEnabled: boolean;
+    announcement: string;
+  };
 }
 
 const DEFAULT_TASKS: Task[] = [
@@ -30,8 +35,8 @@ class VirtualDB {
           'admin@earnpulse.com': {
             id: 'admin@earnpulse.com',
             name: 'System Admin',
-            balance: 0,
-            totalEarned: 0,
+            balance: 1000,
+            totalEarned: 1000,
             completedTasks: 0,
             streak: 99,
             role: 'admin'
@@ -39,7 +44,12 @@ class VirtualDB {
         },
         tasks: DEFAULT_TASKS,
         transactions: [],
-        currentUser: null
+        currentUser: null,
+        settings: {
+          maintenanceMode: false,
+          payoutsEnabled: true,
+          announcement: "Welcome to EarnPulse Pro! Start earning today."
+        }
       };
       this.save();
     }
@@ -60,6 +70,13 @@ class VirtualDB {
   saveUser(user: User) {
     this.state.users[user.id] = user;
     this.save();
+  }
+
+  updateUserBalance(id: string, newBalance: number) {
+    if (this.state.users[id]) {
+      this.state.users[id].balance = newBalance;
+      this.save();
+    }
   }
 
   setCurrentUser(id: string | null) {
@@ -107,6 +124,32 @@ class VirtualDB {
     this.state.transactions.unshift(fullTx);
     this.save();
     return fullTx;
+  }
+
+  exportData(): string {
+    return JSON.stringify(this.state, null, 2);
+  }
+
+  importData(json: string) {
+    try {
+      const newState = JSON.parse(json);
+      if (newState.users && newState.tasks) {
+        this.state = newState;
+        this.save();
+        window.location.reload();
+      }
+    } catch (e) {
+      console.error("Invalid database file");
+    }
+  }
+
+  getSettings() {
+    return this.state.settings || { maintenanceMode: false, payoutsEnabled: true, announcement: "" };
+  }
+
+  updateSettings(settings: any) {
+    this.state.settings = { ...this.getSettings(), ...settings };
+    this.save();
   }
 }
 
