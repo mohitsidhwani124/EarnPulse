@@ -1,7 +1,8 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Initialize Gemini API using the recommended named parameter and direct process.env.API_KEY access
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const getAIRecommendations = async (userBalance: number, completedCount: number) => {
   try {
@@ -28,7 +29,8 @@ export const getAIRecommendations = async (userBalance: number, completedCount: 
       }
     });
 
-    return JSON.parse(response.text);
+    // Access text property directly as per modern GenAI SDK standards
+    return JSON.parse(response.text || '{}');
   } catch (error) {
     console.error("Gemini Error:", error);
     return {
@@ -44,6 +46,7 @@ export const chatWithAssistant = async (message: string) => {
       model: 'gemini-3-flash-preview',
       contents: `You are an earning assistant for EarnPulse. A user asks: "${message}". Provide a helpful, concise response about how they can maximize their time on the app.`,
     });
+    // Access text property directly
     return response.text;
   } catch (error) {
     return "I'm having trouble connecting to my brain right now! Please try again later.";

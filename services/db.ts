@@ -1,5 +1,5 @@
 
-import { User, Task, Transaction, TaskCategory } from '../types';
+import { User, Task, Transaction, TaskCategory, AdMobSettings } from '../types';
 
 const STORAGE_KEY = 'earnpulse_db_v1';
 
@@ -12,14 +12,16 @@ interface DBState {
     maintenanceMode: boolean;
     payoutsEnabled: boolean;
     announcement: string;
+    globalCommission: number;
+    admob: AdMobSettings;
   };
 }
 
 const DEFAULT_TASKS: Task[] = [
-  { id: '1', title: 'Customer Satisfaction Survey', description: 'Help brands improve their service.', reward: 0.85, category: TaskCategory.SURVEY, estimatedTime: '5m', difficulty: 'Easy', icon: 'fa-poll' },
-  { id: '2', title: 'Watch: New Movie Trailer', description: 'Watch the full video to earn rewards.', reward: 0.15, category: TaskCategory.VIDEO, estimatedTime: '2m', difficulty: 'Easy', icon: 'fa-play' },
-  { id: '3', title: 'Test Strategy Game: Kingdom Rise', description: 'Reach level 5 within 48 hours.', reward: 4.50, category: TaskCategory.GAME, estimatedTime: '1h', difficulty: 'Medium', icon: 'fa-gamepad' },
-  { id: '4', title: 'Categorize Product Images', description: 'Identify items in 20 product photos.', reward: 1.20, category: TaskCategory.MICRO_TASK, estimatedTime: '10m', difficulty: 'Easy', icon: 'fa-tags' },
+  { id: '1', title: 'Customer Satisfaction Survey', description: 'Help brands improve their service.', reward: 0.85, providerValue: 1.50, category: TaskCategory.SURVEY, estimatedTime: '5m', difficulty: 'Easy', icon: 'fa-poll' },
+  { id: '2', title: 'Watch: New Movie Trailer', description: 'Watch the full video to earn rewards.', reward: 0.15, providerValue: 0.30, category: TaskCategory.VIDEO, estimatedTime: '2m', difficulty: 'Easy', icon: 'fa-play', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', requiredWatchTime: 15 },
+  { id: '3', title: 'Test Strategy Game: Kingdom Rise', description: 'Reach level 5 within 48 hours.', reward: 4.50, providerValue: 8.00, category: TaskCategory.GAME, estimatedTime: '1h', difficulty: 'Medium', icon: 'fa-gamepad' },
+  { id: '4', title: 'Categorize Product Images', description: 'Identify items in 20 product photos.', reward: 1.20, providerValue: 2.00, category: TaskCategory.MICRO_TASK, estimatedTime: '10m', difficulty: 'Easy', icon: 'fa-tags' },
 ];
 
 class VirtualDB {
@@ -39,7 +41,9 @@ class VirtualDB {
             totalEarned: 1000,
             completedTasks: 0,
             streak: 99,
-            role: 'admin'
+            role: 'admin',
+            status: 'Active',
+            adsWatched: 0
           }
         },
         tasks: DEFAULT_TASKS,
@@ -48,7 +52,16 @@ class VirtualDB {
         settings: {
           maintenanceMode: false,
           payoutsEnabled: true,
-          announcement: "Welcome to EarnPulse Pro! Start earning today."
+          announcement: "Welcome to EarnPulse Pro! Start earning today.",
+          globalCommission: 40,
+          admob: {
+            appId: '',
+            rewardedId: '',
+            interstitialId: '',
+            bannerId: '',
+            estimatedCPM: 12.50,
+            adsEnabled: true
+          }
         }
       };
       this.save();
@@ -75,6 +88,13 @@ class VirtualDB {
   updateUserBalance(id: string, newBalance: number) {
     if (this.state.users[id]) {
       this.state.users[id].balance = newBalance;
+      this.save();
+    }
+  }
+
+  updateUserStatus(id: string, status: 'Active' | 'Banned') {
+    if (this.state.users[id]) {
+      this.state.users[id].status = status;
       this.save();
     }
   }
@@ -107,12 +127,20 @@ class VirtualDB {
     this.save();
   }
 
+  getTransactions(userId: string) {
+    return this.state.transactions.filter(t => t.userId === userId);
+  }
+
   getAllTransactions() {
     return this.state.transactions;
   }
 
-  getTransactions(userId: string) {
-    return this.state.transactions.filter(t => t.userId === userId);
+  updateTransactionStatus(id: string, status: 'Completed' | 'Rejected') {
+    const tx = this.state.transactions.find(t => t.id === id);
+    if (tx) {
+      tx.status = status;
+      this.save();
+    }
   }
 
   addTransaction(userId: string, tx: Omit<Transaction, 'id'>) {
@@ -126,6 +154,21 @@ class VirtualDB {
     return fullTx;
   }
 
+  getSettings() {
+    return this.state.settings || { 
+      maintenanceMode: false, 
+      payoutsEnabled: true, 
+      announcement: "", 
+      globalCommission: 40,
+      admob: { appId: '', rewardedId: '', interstitialId: '', bannerId: '', estimatedCPM: 10, adsEnabled: false }
+    };
+  }
+
+  updateSettings(settings: any) {
+    this.state.settings = { ...this.getSettings(), ...settings };
+    this.save();
+  }
+
   exportData(): string {
     return JSON.stringify(this.state, null, 2);
   }
@@ -133,23 +176,12 @@ class VirtualDB {
   importData(json: string) {
     try {
       const newState = JSON.parse(json);
-      if (newState.users && newState.tasks) {
-        this.state = newState;
-        this.save();
-        window.location.reload();
-      }
+      this.state = newState;
+      this.save();
+      window.location.reload();
     } catch (e) {
       console.error("Invalid database file");
     }
-  }
-
-  getSettings() {
-    return this.state.settings || { maintenanceMode: false, payoutsEnabled: true, announcement: "" };
-  }
-
-  updateSettings(settings: any) {
-    this.state.settings = { ...this.getSettings(), ...settings };
-    this.save();
   }
 }
 
